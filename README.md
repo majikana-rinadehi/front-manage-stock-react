@@ -1,1 +1,0 @@
-# front-manage-stock-react
