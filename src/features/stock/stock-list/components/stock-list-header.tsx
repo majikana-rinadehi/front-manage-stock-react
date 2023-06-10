@@ -6,6 +6,7 @@ import classNames from "classnames"
 type Props = {
     stockCategories: StockCategory[]
     selectedId: number
+    setSelectedId: (id: number) => void
 }
 
 export const StockListHeader = (props: Props) => {
@@ -20,7 +21,7 @@ export const StockListHeader = (props: Props) => {
         <div className="w-3/5 my-5 flex justify-between">
             {
                 props.stockCategories.map((v, _) => (
-                    <div className="relative">
+                    <div className="relative" onClick={() => props.setSelectedId(v.id)}>
                         {v.hasExpiredStock ? badge : null}
                         <div className={classNames("text-xl",
                             {

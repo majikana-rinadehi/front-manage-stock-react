@@ -1,66 +1,38 @@
 import { StockListHeader, Stocks } from "@/features/stock/stock-list/components"
-import type { Stock, StockCategory } from "@/features/stock"
-import { useState } from "react"
-
-// TODO: fetch data
-const stocks: Stock[] = [
-    {
-        name: "塩",
-        amount: 70,
-        isExpired: false
-    },
-    {
-        name: "みりん",
-        amount: 10,
-        isExpired: true
-    },
-    {
-        name: "めんつゆ",
-        amount: 10,
-        isExpired: true
-    },
-    {
-        name: "料理酒",
-        amount: 80,
-        isExpired: false
-    },
-    {
-        name: "酢",
-        amount: 100,
-        isExpired: false
-    },
-]
-
-const stockCategories: StockCategory[] = [
-    {
-        id: 1,
-        name: "食材",
-        hasExpiredStock: true,
-    },
-    {
-        id: 2,
-        name: "調味料",
-        hasExpiredStock: true,
-    },
-    {
-        id: 3,
-        name: "消耗品",
-        hasExpiredStock: false,
-    },
-]
+import { useEffect, useState } from "react"
+import { stockSelector, fetchStock, categorySelector, fetchCategory } from "@/features/stock"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 
 export const StockList = () => {
 
     const [selectedId, setSelectedId] = useState<number>(1)
 
+    const stocks = useAppSelector(stockSelector)
+    const categories = useAppSelector(categorySelector)
+    const stockStatus = useAppSelector(state => state.stock.stock.status)
+    const categoryStatus = useAppSelector(state => state.stock.category.status)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (stockStatus === 'idle') {
+            dispatch(fetchStock())
+        }
+        if (categoryStatus === 'idle') {
+            dispatch(fetchCategory())
+        }
+
+    }, [stocks, categories])
+
     return (
         <>
             {/* list header */}
-            <StockListHeader 
-                stockCategories={stockCategories} 
-                selectedId={selectedId}/>
+            <StockListHeader
+                stockCategories={categories}
+                selectedId={selectedId}
+                setSelectedId={setSelectedId} />
             {/* list */}
-            <Stocks stocks={stocks} />
+            <Stocks
+                stocks={stocks.filter(v => v.categoryId === selectedId)} />
         </>
     )
 }

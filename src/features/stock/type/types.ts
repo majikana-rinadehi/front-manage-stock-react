@@ -1,7 +1,9 @@
 export type Stock = {
+    id: number
+    categoryId: number
     name: string
     amount: number
-    // TODO: refactor variable name
+    expireDate?: string
     isExpired: boolean
 }
 
