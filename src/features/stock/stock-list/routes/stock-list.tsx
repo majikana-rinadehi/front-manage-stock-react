@@ -1,14 +1,14 @@
 import { StockListHeader, Stocks } from "@/features/stock/stock-list/components"
 import { useEffect, useState } from "react"
-import { stockSelector, fetchStock, categorySelector, fetchCategory } from "@/features/stock"
+import { fetchStock, fetchCategory, stockWithIsExpiredSelector, categoryWithHasExpiredStockSelector } from "@/features/stock"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 
 export const StockList = () => {
 
     const [selectedId, setSelectedId] = useState<number>(1)
 
-    const stocks = useAppSelector(stockSelector)
-    const categories = useAppSelector(categorySelector)
+    const stocks = useAppSelector(stockWithIsExpiredSelector)
+    const categories = useAppSelector(categoryWithHasExpiredStockSelector)
     const stockStatus = useAppSelector(state => state.stock.stock.status)
     const categoryStatus = useAppSelector(state => state.stock.category.status)
     const dispatch = useAppDispatch()

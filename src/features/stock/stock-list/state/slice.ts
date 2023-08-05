@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit"
 import { AppState } from "@/lib/store"
 import { getStocks, type Stock, type StockCategory } from "@/features/stock"
 import { getCategories } from "../api/get-categories"
@@ -80,3 +80,24 @@ export default stockSlice.reducer
 
 export const stockSelector = (state: AppState) => state.stock.stock.data
 export const categorySelector = (state: AppState) => state.stock.category.data
+
+export const stockWithIsExpiredSelector = createSelector(
+    stockSelector,
+    (stocks) => {
+        return stocks.map(stock => ({
+            ...stock,
+            isExpired: stock.expireDate ? new Date(stock.expireDate) < new Date() : false
+        }))
+    }
+)
+
+export const categoryWithHasExpiredStockSelector = createSelector(
+    stockWithIsExpiredSelector,
+    categorySelector,
+    (stocks, categories) => {
+        return categories.map(category => ({
+            ...category,
+            hasExpiredStock: stocks.findIndex(stock => { return stock.categoryId === category.id && stock.isExpired}) !== -1
+        }))
+    }
+)

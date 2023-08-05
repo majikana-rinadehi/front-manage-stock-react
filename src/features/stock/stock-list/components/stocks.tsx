@@ -42,7 +42,7 @@ export const Stocks = (props: Props) => {
             </div>
             <div className="mt-4 flex flex-wrap justify-between">
                 {/* stock */}
-                {props.stocks.map(v => <Stock {...v} displayType={displayType} />)}
+                {props.stocks.map((v, i) => <Stock {...v} displayType={displayType} key={i}/>)}
 
                 {/* add stock button */}
                 <div className="mb-5 relative flex justify-center items-center 

@@ -1,11 +1,11 @@
-import type { StockCategory } from "@/features/stock"
+import type { ApiResponse, StockCategory } from "@/features/stock"
 import { axiosInstance } from "@/lib/axios"
 
 // apiよりcategoriessを取得する
 export const getCategories = async (): Promise<StockCategory[]> => {
-    return await axiosInstance.get<StockCategory[]>("/api/categories")
+    return await axiosInstance.get<ApiResponse<StockCategory>>("/categories")
         .then(res => {
-            return res.data
+            return res.data.results
         })
 }
 
