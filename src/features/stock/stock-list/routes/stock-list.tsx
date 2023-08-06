@@ -23,6 +23,11 @@ export const StockList = () => {
 
     }, [stocks, categories])
 
+    const onCloseEditModal = () => {
+        console.log("stock-list: onCloseEditModal")
+        dispatch(fetchStock())
+    }
+
     return (
         <>
             {/* list header */}
@@ -32,6 +37,7 @@ export const StockList = () => {
                 setSelectedId={setSelectedId} />
             {/* list */}
             <Stocks
+                onCloseEditModal={onCloseEditModal}
                 stocks={stocks.filter(v => v.categoryId === selectedId)} />
         </>
     )

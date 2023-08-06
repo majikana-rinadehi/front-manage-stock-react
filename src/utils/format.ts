@@ -12,3 +12,7 @@ export const getYYYY_MM = (timeStamp: string): string => {
 export const getMMDD = (timeStamp: string): string => {
     return format(new Date(timeStamp), 'M/d')
 }
+
+export const getYYYYMMDD = (timeStamp: string): string => {
+    return format(new Date(timeStamp), 'yyyy/MM/dd')
+}

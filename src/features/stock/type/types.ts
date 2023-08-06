@@ -1,4 +1,5 @@
 export type Stock = {
+    [key: string]: any
     id: number
     categoryId: number
     name: string

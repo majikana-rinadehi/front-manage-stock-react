@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit"
 import { AppState } from "@/lib/store"
 import { getStocks, type Stock, type StockCategory } from "@/features/stock"
 import { getCategories } from "../api/get-categories"
+import { deleteStock } from "../../stock-edit/api/delete-stock"
 
 type StockState = {
     stock: {
@@ -43,6 +44,13 @@ export const fetchCategory = createAsyncThunk(
     }
 )
 
+export const removeStock = createAsyncThunk(
+    'stock/delete',
+    async (id: number) => {
+        return await deleteStock(id)
+    }
+)
+
 export const stockSlice = createSlice({
     name: 'stock',
     initialState,
@@ -50,6 +58,7 @@ export const stockSlice = createSlice({
     },
     extraReducers(builder) {
         builder
+            // fetchStock
             .addCase(fetchStock.pending, (state, _) => {
                 state.stock.status = 'pending'
             })
@@ -60,6 +69,17 @@ export const stockSlice = createSlice({
             .addCase(fetchStock.rejected, (state, _) => {
                 state.stock.status = 'rejected'
             })
+            // removeStock
+            .addCase(removeStock.pending, (state, _) => {
+                state.stock.status = 'pending'
+            })
+            .addCase(removeStock.fulfilled, (state, _) => {
+                state.stock.status = 'fulfilled'
+            })
+            .addCase(removeStock.rejected, (state, _) => {
+                state.stock.status = 'rejected'
+            })
+            // fetchCategory
             .addCase(fetchCategory.pending, (state, _) => {
                 state.category.status = 'pending'
             })
