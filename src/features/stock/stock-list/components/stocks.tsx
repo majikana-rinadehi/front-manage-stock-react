@@ -7,9 +7,11 @@ import { faPercent, faCalendarCheck as faCalendar, faPlus } from "@fortawesome/f
 import { useState } from "react"
 import classNames from "classnames"
 import { StockEdit } from "../../stock-edit/components/stock-edit"
+import { StockCreate } from "../../stock-create/components/stock-create"
 
 type Props = {
-    stocks: StockType[]
+    stocks: StockType[],
+    categoryId: number,
     onCloseEditModal: () => void
 }
 
@@ -18,17 +20,23 @@ export const Stocks = (props: Props) => {
     type DisplayType = 'percent' | 'calendar'
 
     const [displayType, setDisplayType] = useState<DisplayType>("percent")
-    const [showModal, setShowModal] = useState<boolean>(false)
+    const [showEditModal, setShowEditModal] = useState<boolean>(false)
+    const [showCreateModal, setShowCreateModal] = useState<boolean>(false)
     const [editingItem, setEditingItem] = useState<StockType | null>(null)
 
     const onClickStock = (stock: StockType) => {
-        setShowModal(true)
+        setShowEditModal(true)
         setEditingItem(stock)
+    }
+
+    const onClickAddButton = () => {
+        setShowCreateModal(true)
     }
 
     const onCloseModal = () => {
         console.log("onCloseModal")
-        setShowModal(false)
+        setShowEditModal(false)
+        setShowCreateModal(false)
         setEditingItem(null)
         console.log("stocks: onCloseEditModal")
         props.onCloseEditModal()
@@ -65,7 +73,9 @@ export const Stocks = (props: Props) => {
                 ))}
 
                 {/* add stock button */}
-                <div className="mb-5 relative flex justify-center items-center 
+                <div
+                    onClick={onClickAddButton} 
+                    className="mb-5 relative flex justify-center items-center 
                                 h-[6.5rem] w-[6.5rem] bg-[#d9d9d9] rounded-3xl box-shadow">
                     <FontAwesomeIcon icon={faPlus} size="xl" color="black" />
                 </div>
@@ -73,7 +83,7 @@ export const Stocks = (props: Props) => {
 
             {/* 在庫編集フォームモーダル */}
             {
-                showModal ? (
+                showEditModal ? (
                     <div
                         className="overflow-y-scroll z-10 fixed top-0 left-0 right-0 mt-44 h-full flex justify-center text-inherit"
                     >
@@ -83,7 +93,24 @@ export const Stocks = (props: Props) => {
                             className="fixed inset-0 bg-black opacity-50">
                         </div>
                         {/* フォーム */}
-                        <StockEdit {...editingItem!} onCloseModal={onCloseModal}/>
+                        <StockEdit {...editingItem!} onCloseModal={onCloseModal} />
+                    </div>
+                ) : null
+            }
+
+            {/* 在庫作成フォームモーダル */}
+            {
+                showCreateModal ? (
+                    <div
+                        className="overflow-y-scroll z-10 fixed top-0 left-0 right-0 mt-44 h-full flex justify-center text-inherit"
+                    >
+                        {/* オーバーレイ */}
+                        <div
+                            onClick={onCloseModal}
+                            className="fixed inset-0 bg-black opacity-50">
+                        </div>
+                        {/* フォーム*/}
+                        <StockCreate onCloseModal={onCloseModal} categoryId={props.categoryId}/>
                     </div>
                 ) : null
             }

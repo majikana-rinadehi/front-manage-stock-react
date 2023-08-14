@@ -37,6 +37,7 @@ export const StockList = () => {
                 setSelectedId={setSelectedId} />
             {/* list */}
             <Stocks
+                categoryId={selectedId}
                 onCloseEditModal={onCloseEditModal}
                 stocks={stocks.filter(v => v.categoryId === selectedId)} />
         </>

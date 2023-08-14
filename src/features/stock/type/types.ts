@@ -13,3 +13,7 @@ export type StockCategory = {
     name: string
     hasExpiredStock: boolean
 }
+
+export type StockCreate = Stock & {
+    userId: number
+}

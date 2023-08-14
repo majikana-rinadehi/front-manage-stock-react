@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit"
 import { AppState } from "@/lib/store"
-import { getStocks, type Stock, type StockCategory } from "@/features/stock"
+import { getStocks, type Stock, type StockCategory, type StockCreate } from "@/features/stock"
 import { getCategories } from "../api/get-categories"
 import { deleteStock } from "../../stock-edit/api/delete-stock"
 import { updateStock } from "../../stock-edit/api/update-stock"
 import { getFormattedTimeStamp } from "@/utils/format"
+import { createStock } from "../../stock-create/api/create-stock"
 
 type StockState = {
     stock: {
@@ -61,6 +62,13 @@ export const editStock = createAsyncThunk(
     }
 )
 
+export const addStock = createAsyncThunk(
+    'stock/create',
+    async({stock}: {stock: StockCreate}) => {
+        return await createStock(stock)
+    }
+)
+
 export const stockSlice = createSlice({
     name: 'stock',
     initialState,
@@ -99,6 +107,16 @@ export const stockSlice = createSlice({
             .addCase(removeStock.rejected, (state, _) => {
                 state.stock.status = 'rejected'
             })
+            // addStock
+            .addCase(addStock.pending, (state, _) => {
+                state.stock.status = 'pending'
+            })
+            .addCase(addStock.fulfilled, (state, _) => {
+                state.stock.status = 'fulfilled'
+            })
+            .addCase(addStock.rejected, (state, _) => {
+                state.stock.status = 'rejected'
+            })
             // fetchCategory
             .addCase(fetchCategory.pending, (state, _) => {
                 state.category.status = 'pending'
@@ -126,7 +144,7 @@ export const stockWithIsExpiredSelector = createSelector(
     (stocks) => {
         return stocks.map(stock => ({
             ...stock,
-            expireDate: stock.expireDate ? getFormattedTimeStamp(stock.expireDate, 'yyyy/MM/dd') : stock.expireDate,
+            expireDate: stock.expireDate ? getFormattedTimeStamp(stock.expireDate, 'yyyy-MM-dd') : stock.expireDate,
             isExpired: stock.expireDate ? new Date(stock.expireDate) < new Date() : false
         }))
     }
