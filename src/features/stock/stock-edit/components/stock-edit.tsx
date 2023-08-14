@@ -1,8 +1,7 @@
 import { FormItem } from "@/features/ui/form/form_item"
 import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { removeStock, type Stock as StockType } from "@/features/stock"
-import { getYYYYMMDD } from "@/utils/format"
+import { editStock, removeStock, type Stock as StockType } from "@/features/stock"
 import { useState } from "react"
 import { useAppDispatch } from "@/lib/hooks"
 import { DeleteDialog } from "./delete-dialog"
@@ -35,9 +34,18 @@ export const StockEdit = (props: Props) => {
         console.log(e.target.value)
         setEditItem((prevItem) => {
             const newItem: StockType = { ...prevItem }
-            newItem[itemProperty] = e.target.value
+            newItem[itemProperty] = typeof newItem[itemProperty] === 'number' 
+                ? parseInt(e.target.value)
+                : e.target.value 
             return newItem
         })
+    }
+
+    const onClickUpdate = async() => {
+        console.log("onClickUpdate")
+        console.log(editItem)
+        await dispatch(editStock({id: editItem.id, stock: editItem}))
+        props.onCloseModal()
     }
 
     return (
@@ -45,7 +53,8 @@ export const StockEdit = (props: Props) => {
             <div className="h-[360px] w-72 z-20 bg-[#F5F5F5] rounded-[20px] text-black">
                 <div className="m-4 flex">
                     <div className="text-2xl font-bold">編集✏️</div>
-                    <div className="ml-auto">
+                    <div className="ml-auto"
+                        onClick={() => onClickUpdate()}>
                         <FontAwesomeIcon icon={faCheck} size="2xl" color="#0FAEA5" />
                     </div>
                     <div className="ml-6"
@@ -62,7 +71,7 @@ export const StockEdit = (props: Props) => {
                     <FormItem onChange={(e) => onInputChange(e, "name")} value={editItem.name} itemName="単位" placeHolder="例: 本" classNameAdd="w-1/2 mx-0" />
                 </div>
                 {/* expireDate */}
-                <FormItem onChange={(e) => onInputChange(e, "expireDate")} value={editItem.expireDate ? getYYYYMMDD(editItem.expireDate) : ""} itemName="期限" placeHolder="例: 2023/09/01" />
+                <FormItem onChange={(e) => onInputChange(e, "expireDate")} value={editItem.expireDate} itemName="期限" placeHolder="例: 2023/09/01" />
             </div>
             {
                 showDeleteDialog ? <DeleteDialog onClickCancel={() => setShowDeleteDialog(false)} onClickDelete={() => onClickDelete()}/> : null

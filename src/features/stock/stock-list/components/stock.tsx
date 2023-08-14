@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons"
 import { faClock } from "@fortawesome/free-regular-svg-icons"
 import type { Stock as StockType } from "@/features/stock"
-import { getMMDD } from "@/utils/format"
+import { getFormattedTimeStamp } from "@/utils/format"
 import classNames from "classnames"
 
 type DisplayType = 'percent' | 'calendar'
@@ -50,7 +50,7 @@ export const Stock = (props: Props) => {
                             <FontAwesomeIcon icon={faClock} size="1x" />
                         </div>
                         <div>
-                            {props.stock.expireDate ? getMMDD(props.stock.expireDate) : "-"}
+                            {props.stock.expireDate ? getFormattedTimeStamp(props.stock.expireDate, 'M/d') : "-"}
                         </div>
                     </div>)
             default:

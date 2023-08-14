@@ -3,6 +3,8 @@ import { AppState } from "@/lib/store"
 import { getStocks, type Stock, type StockCategory } from "@/features/stock"
 import { getCategories } from "../api/get-categories"
 import { deleteStock } from "../../stock-edit/api/delete-stock"
+import { updateStock } from "../../stock-edit/api/update-stock"
+import { getFormattedTimeStamp } from "@/utils/format"
 
 type StockState = {
     stock: {
@@ -51,6 +53,14 @@ export const removeStock = createAsyncThunk(
     }
 )
 
+export const editStock = createAsyncThunk(
+    'stock/update',
+    // async(id: number, stock: Stock) => {
+    async({id, stock}: {id: number, stock: Stock}) => {
+        return await updateStock(id, stock)
+    }
+)
+
 export const stockSlice = createSlice({
     name: 'stock',
     initialState,
@@ -67,6 +77,16 @@ export const stockSlice = createSlice({
                 state.stock.status = 'fulfilled'
             })
             .addCase(fetchStock.rejected, (state, _) => {
+                state.stock.status = 'rejected'
+            })
+            // editStock
+            .addCase(editStock.pending, (state, _) => {
+                state.stock.status = 'pending'
+            })
+            .addCase(editStock.fulfilled, (state, action) => {
+                state.stock.status = 'fulfilled'
+            })
+            .addCase(editStock.rejected, (state, _) => {
                 state.stock.status = 'rejected'
             })
             // removeStock
@@ -106,6 +126,7 @@ export const stockWithIsExpiredSelector = createSelector(
     (stocks) => {
         return stocks.map(stock => ({
             ...stock,
+            expireDate: stock.expireDate ? getFormattedTimeStamp(stock.expireDate, 'yyyy/MM/dd') : stock.expireDate,
             isExpired: stock.expireDate ? new Date(stock.expireDate) < new Date() : false
         }))
     }
