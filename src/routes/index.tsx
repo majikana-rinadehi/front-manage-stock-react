@@ -1,7 +1,8 @@
+import { useGoogleAuth } from "@/features/auth/login/hooks/useGoogleAuth"
 import { Login } from "@/features/auth/login/routes/login"
 import { StockList } from "@/features/stock"
 import { Layout } from "@/features/ui"
-import { RouteObject, useRoutes, Outlet } from "react-router-dom"
+import { RouteObject, useRoutes, Outlet, Navigate } from "react-router-dom"
 
 const App = () => {
     return (
@@ -12,10 +13,13 @@ const App = () => {
 }
 
 export const AppRoutes = () => {
+
+    const {user} = useGoogleAuth()
+
     const routes: RouteObject[] = [
         {
             path: "/app",
-            element: <App/>,
+            element: user ? <App/> : <Navigate to={'/login'}/>,
             children: [
                 { path: "stockList", element: <StockList/>}
             ]
@@ -26,7 +30,14 @@ export const AppRoutes = () => {
             children: [
                 { path: "", element: <Login/>}
             ]
-        }
+        },
+        {
+            path: "/*",
+            element: <Navigate to={'/login'}/>,
+            children: [
+                { path: "", element: <Login/>}
+            ]
+        },
     ]
 
     const element = useRoutes([...routes])
