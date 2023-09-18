@@ -91,7 +91,7 @@ export const stockSlice = createSlice({
             .addCase(editStock.pending, (state, _) => {
                 state.stock.status = 'pending'
             })
-            .addCase(editStock.fulfilled, (state, action) => {
+            .addCase(editStock.fulfilled, (state, _) => {
                 state.stock.status = 'fulfilled'
             })
             .addCase(editStock.rejected, (state, _) => {
