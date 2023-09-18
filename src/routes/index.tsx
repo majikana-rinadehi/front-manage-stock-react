@@ -1,3 +1,4 @@
+import { Login } from "@/features/auth/login/routes/login"
 import { StockList } from "@/features/stock"
 import { Layout } from "@/features/ui"
 import { RouteObject, useRoutes, Outlet } from "react-router-dom"
@@ -17,6 +18,13 @@ export const AppRoutes = () => {
             element: <App/>,
             children: [
                 { path: "stockList", element: <StockList/>}
+            ]
+        },
+        {
+            path: "/login",
+            element: <App/>,
+            children: [
+                { path: "", element: <Login/>}
             ]
         }
     ]
