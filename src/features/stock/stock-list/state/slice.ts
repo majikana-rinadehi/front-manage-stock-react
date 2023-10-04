@@ -1,11 +1,14 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit"
 import { AppState } from "@/lib/store"
-import { getStocks, type Stock, type StockCategory, type StockCreate } from "@/features/stock"
+import { getStocks, StockCategoryCreate, type Stock, type StockCategory, type StockCreate } from "@/features/stock"
 import { getCategories } from "../api/get-categories"
 import { deleteStock } from "../../stock-edit/api/delete-stock"
 import { updateStock } from "../../stock-edit/api/update-stock"
 import { getFormattedTimeStamp } from "@/utils/format"
 import { createStock } from "../../stock-create/api/create-stock"
+import { createCategory } from "../../category-create/api/create-category"
+import { deleteCategory } from "../../category-edit/api/delete-category"
+import { updateCategory } from "../../category-edit/api/update-category"
 
 type StockState = {
     stock: {
@@ -35,15 +38,15 @@ const initialState: StockState = {
 
 export const fetchStock = createAsyncThunk(
     'stock/fetch',
-    async () => {
-        return await getStocks()
+    async (userId: number) => {
+        return await getStocks(userId)
     }
 )
 
 export const fetchCategory = createAsyncThunk(
     'category/fetch',
-    async () => {
-        return await getCategories()
+    async (userId: number) => {
+        return await getCategories(userId)
     }
 )
 
@@ -57,15 +60,37 @@ export const removeStock = createAsyncThunk(
 export const editStock = createAsyncThunk(
     'stock/update',
     // async(id: number, stock: Stock) => {
-    async({id, stock}: {id: number, stock: Stock}) => {
+    async ({ id, stock }: { id: number, stock: Stock }) => {
         return await updateStock(id, stock)
     }
 )
 
 export const addStock = createAsyncThunk(
     'stock/create',
-    async({stock}: {stock: StockCreate}) => {
+    async ({ stock }: { stock: StockCreate }) => {
         return await createStock(stock)
+    }
+)
+
+export const addCategory = createAsyncThunk(
+    'category/create',
+    async ({ category }: { category: StockCategoryCreate }) => {
+        return await createCategory(category)
+    }
+)
+
+export const removeCategory = createAsyncThunk(
+    'category/delete',
+    async (id: number) => {
+        return await deleteCategory(id)
+    }
+)
+
+export const editCategory = createAsyncThunk(
+    'category/update',
+    // async(id: number, category: Category) => {
+    async ({ id, category }: { id: number, category: StockCategory }) => {
+        return await updateCategory(id, category)
     }
 )
 
@@ -128,6 +153,36 @@ export const stockSlice = createSlice({
             .addCase(fetchCategory.rejected, (state, _) => {
                 state.category.status = 'rejected'
             })
+            // addCategory
+            .addCase(addCategory.pending, (state, _) => {
+                state.category.status = 'pending'
+            })
+            .addCase(addCategory.fulfilled, (state, _) => {
+                state.category.status = 'fulfilled'
+            })
+            .addCase(addCategory.rejected, (state, _) => {
+                state.category.status = 'rejected'
+            })
+            // removeCategory
+            .addCase(removeCategory.pending, (state, _) => {
+                state.category.status = 'pending'
+            })
+            .addCase(removeCategory.fulfilled, (state, _) => {
+                state.category.status = 'fulfilled'
+            })
+            .addCase(removeCategory.rejected, (state, _) => {
+                state.category.status = 'rejected'
+            })
+            // editCategory
+            .addCase(editCategory.pending, (state, _) => {
+                state.category.status = 'pending'
+            })
+            .addCase(editCategory.fulfilled, (state, _) => {
+                state.category.status = 'fulfilled'
+            })
+            .addCase(editCategory.rejected, (state, _) => {
+                state.category.status = 'rejected'
+            })
     }
 })
 
@@ -156,7 +211,7 @@ export const categoryWithHasExpiredStockSelector = createSelector(
     (stocks, categories) => {
         return categories.map(category => ({
             ...category,
-            hasExpiredStock: stocks.findIndex(stock => { return stock.categoryId === category.id && stock.isExpired}) !== -1
+            hasExpiredStock: stocks.findIndex(stock => { return stock.categoryId === category.id && stock.isExpired }) !== -1
         }))
     }
 )

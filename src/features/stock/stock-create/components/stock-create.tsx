@@ -3,7 +3,9 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { addStock, type StockCreate as StockType } from "@/features/stock"
 import { useState } from "react"
-import { useAppDispatch } from "@/lib/hooks"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
+import { userSelector } from "@/features/auth/login/state/slice"
+import { getFormattedTimeStamp } from "@/utils/format"
 
 export type Props = {
     categoryId: number,
@@ -12,17 +14,19 @@ export type Props = {
 
 
 export const StockCreate = (props: Props) => {
+
+    const user = useAppSelector(userSelector)
     
     const initializeStock = (): StockType => {
         return {
             id: 0,
-            amount: 0,
-            // TODO: apply real user id from login info
-            userId: 1,
+            amount: 1,
+            userId: user?.id!,
             categoryId: props.categoryId,
             isExpired: false,
             name: "",
-            expireDate: ""
+            expireDate: getFormattedTimeStamp(new Date().toISOString(), 'yyyy-MM-dd'),
+            unit: "本"
         }
     
     }
@@ -35,7 +39,7 @@ export const StockCreate = (props: Props) => {
         setEditItem((prevItem) => {
             const newItem: StockType = { ...prevItem }
             newItem[itemProperty] = typeof newItem[itemProperty] === 'number' 
-                ? parseInt(e.target.value)
+                ? Number.isNaN(parseInt(e.target.value)) ? "" : parseInt(e.target.value)
                 : e.target.value 
             return newItem
         })
@@ -60,11 +64,11 @@ export const StockCreate = (props: Props) => {
                 </div>
                 {/* item */}
                 <FormItem onChange={(e) => onInputChange(e, "name")} value={editItem.name} itemName="品名" placeHolder="例: きゅうり" />
-                <div className="mx-6 flex gap-4">
+                <div className="flex gap-2">
                     {/* amount */}
                     <FormItem onChange={(e) => onInputChange(e, "amount")} value={editItem.amount} itemName="数量" placeHolder="例: 3" classNameAdd="w-1/2 mx-0" />
                     {/* unit */}
-                    <FormItem onChange={(e) => onInputChange(e, "name")} value={editItem.name} itemName="単位" placeHolder="例: 本" classNameAdd="w-1/2 mx-0" />
+                    <FormItem onChange={(e) => onInputChange(e, "unit")} value={editItem.unit} itemName="単位" placeHolder="例: 本" classNameAdd="w-1/2 mx-0" />
                 </div>
                 {/* expireDate */}
                 <FormItem onChange={(e) => onInputChange(e, "expireDate")} value={editItem.expireDate} itemName="期限" placeHolder="例: 2023-09-01" />

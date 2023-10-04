@@ -1,9 +1,11 @@
 import stockReducer from "@/features/stock/stock-list/state/slice";
+import userReducer from "@/features/auth/login/state/slice";
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 
 export const store = configureStore({
     reducer: {
-        stock: stockReducer
+        stock: stockReducer,
+        user: userReducer
     }
 })
 

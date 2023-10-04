@@ -6,6 +6,7 @@ export type Stock = {
     amount: number
     expireDate?: string
     isExpired: boolean
+    unit: string
 }
 
 export type StockCategory = {
@@ -15,5 +16,10 @@ export type StockCategory = {
 }
 
 export type StockCreate = Stock & {
+    userId: number
+}
+
+export type StockCategoryCreate = {
+    name: string
     userId: number
 }

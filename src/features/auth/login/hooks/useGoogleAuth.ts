@@ -8,31 +8,42 @@ const provider = new GoogleAuthProvider()
 export const useGoogleAuth = () => {
 
     const [error, setError] = useState<string>('')
-    const [user, setUser] = useState<UserCredential['user'] | null>(null)
+    const [googleUser, setGoogleUser] = useState<UserCredential['user'] | null>(null)
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
-            setUser(user)
+            setGoogleUser(user)
         })
 
         return () => unsubscribe()
     }, [firebaseApp])
 
-    const signingIn = async (): Promise<UserCredential['user'] | null> => {
-        const user = await signInWithPopup(auth, provider)
-            .then((result) => {
-                return result.user
-            })
-            .catch((err: Error) => {
-                setError(err.message)
-                return null
-            })
-        return user ? user : null
+    const signingInWithPopup = async (): Promise<UserCredential['user'] | null> => {
+        console.log('signInWithRedirect start')
+        try {
+            // await signInWithRedirect(auth, provider)
+            //     .then()
+            //     .catch((err) => {
+            //         console.log('err:', err)
+            //     })
+            // const result = await getRedirectResult(auth)
+            //     .then()
+            //     .catch((err) => {
+            //         console.log('err:', err)
+            //     })
+            const result = await signInWithPopup(auth, provider)
+            console.log('result:', result)
+            return result ? result.user : null
+        } catch(e) {
+            console.log(e)
+        }
+        console.log('null')
+        return null
     }
 
     const signingOut = async (): Promise<boolean> => {
         const result = await signOut(auth)
-            .then((result) => {
+            .then((_) => {
                 return true
             })
             .catch((err: Error) => {
@@ -42,5 +53,5 @@ export const useGoogleAuth = () => {
         return result
     }
 
-    return {error, user, signIn: signingIn, signingOut}
+    return { error, googleUser, signingInWithPopup, signingOut }
 }

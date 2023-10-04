@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom'
 
 export const UserIcon = () => {
 
-    const { signingOut, user } = useGoogleAuth()
+    const { signingOut, googleUser } = useGoogleAuth()
     const navigate = useNavigate()
 
     const [showUserMenu, setShowUserMenu] = useState(false)
 
     const onClickUserIcon = async () => {
-        if (!user) {
+        if (!googleUser) {
             return
         }
         setShowUserMenu(true)

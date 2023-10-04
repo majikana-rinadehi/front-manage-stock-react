@@ -14,12 +14,12 @@ const App = () => {
 
 export const AppRoutes = () => {
 
-    const {user} = useGoogleAuth()
+    const {googleUser} = useGoogleAuth()
 
     const routes: RouteObject[] = [
         {
             path: "/app",
-            element: user ? <App/> : <Navigate to={'/login'}/>,
+            element: googleUser ? <App/> : <Navigate to={'/login'}/>,
             children: [
                 { path: "stockList", element: <StockList/>}
             ]
