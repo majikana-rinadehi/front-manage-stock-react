@@ -3,6 +3,7 @@ import { AiFillWarning } from 'react-icons/ai'
 import { useGoogleAuth } from '../hooks/useGoogleAuth'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { postSigninWithProviders } from '../api/post-signin-with-providers'
 
 export const Login = () => {
 
@@ -15,6 +16,10 @@ export const Login = () => {
         setErrMsg('')
         const result = await signIn()
         if (result) {
+            const res = await postSigninWithProviders({
+                authProvider: 'google',
+                uid: result.uid
+            })
             navigate('/app/stockList')
         }
         setErrMsg('ログインに失敗しました。')

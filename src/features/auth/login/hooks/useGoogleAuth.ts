@@ -18,7 +18,7 @@ export const useGoogleAuth = () => {
         return () => unsubscribe()
     }, [firebaseApp])
 
-    const signingIn = async (): Promise<boolean> => {
+    const signingIn = async (): Promise<UserCredential['user'] | null> => {
         const user = await signInWithPopup(auth, provider)
             .then((result) => {
                 return result.user
@@ -27,7 +27,7 @@ export const useGoogleAuth = () => {
                 setError(err.message)
                 return null
             })
-        return user ? true : false
+        return user ? user : null
     }
 
     const signingOut = async (): Promise<boolean> => {
