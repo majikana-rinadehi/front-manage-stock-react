@@ -1,4 +1,5 @@
 export type User = {
+    [key: string]: any
     id: number
     name: string
     mailAddress: string

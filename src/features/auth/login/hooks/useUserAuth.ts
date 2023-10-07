@@ -14,15 +14,11 @@ export const useUserAuth = () => {
         })
         console.log('res', res)
         dispatch(setUser({
-            user: {
-                data: {
-                    id: res.id!,
-                    // FIXME: fetch these from api resposne
-                    mailAddress: '',
-                    name: ''
-                }
-            }
-        }))
+            id: res.id!,
+            mailAddress: res.mailAddress,
+            name: res.name
+        }
+        ))
     }
 
     return {
